@@ -1,0 +1,22 @@
+{
+  "type": "port",
+  "name": "path-absolutize-kotlin",
+  "source": {
+    "path": "tmp/path-absolutize/src",
+    "lang": "rust"
+  },
+  "target": {
+    "path": "src/commonMain/kotlin/io/github/kotlinmania/pathabsolutize",
+    "lang": "kotlin"
+  },
+  "checks": {
+    "deep": true,
+    "missing": true,
+    "todos": true,
+    "lint": true
+  },
+  "reexport_modules": [
+    "mod.rs",
+    "lib.rs"
+  ]
+}
