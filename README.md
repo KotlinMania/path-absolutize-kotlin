@@ -342,7 +342,7 @@ https://docs.rs/path-absolutize
 
 ```kotlin
 dependencies {
-    implementation("io.github.kotlinmania:path-absolutize-kotlin:0.1.0-SNAPSHOT")
+    implementation("io.github.kotlinmania:path-absolutize-kotlin:0.1.0")
 }
 ```
 
