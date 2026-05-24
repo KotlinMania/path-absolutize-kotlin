@@ -57,10 +57,18 @@ kotlin {
         binaries.framework { baseName = "PathAbsolutize"; xcf.add(this) }
     }
     iosSimulatorArm64 {
-        binaries.framework { baseName = "PathAbsolutize"; xcf.add(this) }
+        binaries.framework {
+            baseName = "PathAbsolutize"
+            isStatic = true
+            xcf.add(this)
+        }
     }
     iosX64 {
-        binaries.framework { baseName = "PathAbsolutize"; xcf.add(this) }
+        binaries.framework {
+            baseName = "PathAbsolutize"
+            isStatic = true
+            xcf.add(this)
+        }
     }
 
     tvosArm64 {
