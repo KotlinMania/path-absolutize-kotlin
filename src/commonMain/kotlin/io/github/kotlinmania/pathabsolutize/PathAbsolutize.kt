@@ -2,10 +2,24 @@
 package io.github.kotlinmania.pathabsolutize
 
 /**
+ * Trait/interface for path absolutization operations.
+ */
+interface Absolutize {
+    fun absolutize(): String
+    fun absolutizeFrom(cwd: String): String
+    fun absolutizeVirtually(virtualRoot: String): String
+}
+
+/**
  * Normalizes a path string to an absolute path by resolving dots (`.` and `..`)
  * without requiring filesystem access or file existence.
  */
 object PathAbsolutizer {
+    /**
+     * Resolves a path to an absolute path using "/" as root default if no CWD provided.
+     */
+    fun absolutize(path: String): String = absolutizeFrom(path, "/")
+
     /**
      * Resolves a path relative to the given base/current working directory [cwd].
      */
@@ -13,22 +27,27 @@ object PathAbsolutizer {
         val normalizedPath = path.replace('\\', '/')
         val normalizedCwd = cwd.replace('\\', '/')
 
-        val isAbsolute = normalizedPath.startsWith('/')
+        val (prefix, cleanPath) = extractWindowsPrefix(normalizedPath)
+        val (cwdPrefix, cleanCwd) = extractWindowsPrefix(normalizedCwd)
+
+        val effectivePrefix = if (prefix.isNotEmpty()) prefix else cwdPrefix
+        val isAbsolute = cleanPath.startsWith('/') || prefix.isNotEmpty()
+
         val combined = if (isAbsolute) {
-            normalizedPath
+            cleanPath
         } else {
-            val base = if (normalizedCwd.endsWith('/') && normalizedCwd.length > 1) {
-                normalizedCwd.dropLast(1)
-            } else if (normalizedCwd == "/") {
+            val base = if (cleanCwd.endsWith('/') && cleanCwd.length > 1) {
+                cleanCwd.dropLast(1)
+            } else if (cleanCwd == "/") {
                 ""
             } else {
-                normalizedCwd
+                cleanCwd
             }
-            "$base/$normalizedPath"
+            "$base/$cleanPath"
         }
 
         val segments = mutableListOf<String>()
-        val hasLeadingSlash = combined.startsWith('/')
+        val hasLeadingSlash = combined.startsWith('/') || effectivePrefix.isNotEmpty()
 
         for (part in combined.split('/')) {
             when (part) {
@@ -44,12 +63,17 @@ object PathAbsolutizer {
             }
         }
 
-        val result = if (hasLeadingSlash) {
+        val joined = if (hasLeadingSlash) {
             "/" + segments.joinToString("/")
         } else {
             if (segments.isEmpty()) "." else segments.joinToString("/")
         }
-        return result
+
+        return if (effectivePrefix.isNotEmpty()) {
+            effectivePrefix + joined
+        } else {
+            joined
+        }
     }
 
     /**
@@ -69,7 +93,21 @@ object PathAbsolutizer {
             normalizedRoot
         }
     }
+
+    private fun extractWindowsPrefix(path: String): Pair<String, String> {
+        if (path.length >= 2 && path[1] == ':' && ((path[0] in 'a'..'z') || (path[0] in 'A'..'Z'))) {
+            val prefix = path.substring(0, 2)
+            val rest = path.substring(2)
+            return Pair(prefix, rest)
+        }
+        return Pair("", path)
+    }
 }
+
+/**
+ * Extension function to absolutize a path string.
+ */
+fun String.absolutize(): String = PathAbsolutizer.absolutize(this)
 
 /**
  * Extension function to absolutize a path string relative to a base directory.
