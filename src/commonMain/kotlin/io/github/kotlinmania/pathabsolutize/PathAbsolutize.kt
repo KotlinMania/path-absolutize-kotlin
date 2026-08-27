@@ -1,4 +1,4 @@
-// port-lint: source lib.rs
+// port-lint: source path-absolutize/src/lib.rs
 package io.github.kotlinmania.pathabsolutize
 
 /**
