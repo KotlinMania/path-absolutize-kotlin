@@ -6,7 +6,9 @@ package io.github.kotlinmania.pathabsolutize
  */
 interface Absolutize {
     fun absolutize(): String
+
     fun absolutizeFrom(cwd: String): String
+
     fun absolutizeVirtually(virtualRoot: String): String
 }
 
@@ -33,18 +35,20 @@ object PathAbsolutizer {
         val effectivePrefix = if (prefix.isNotEmpty()) prefix else cwdPrefix
         val isAbsolute = cleanPath.startsWith('/') || prefix.isNotEmpty()
 
-        val combined = if (isAbsolute) {
-            cleanPath
-        } else {
-            val base = if (cleanCwd.endsWith('/') && cleanCwd.length > 1) {
-                cleanCwd.dropLast(1)
-            } else if (cleanCwd == "/") {
-                ""
+        val combined =
+            if (isAbsolute) {
+                cleanPath
             } else {
-                cleanCwd
+                val base =
+                    if (cleanCwd.endsWith('/') && cleanCwd.length > 1) {
+                        cleanCwd.dropLast(1)
+                    } else if (cleanCwd == "/") {
+                        ""
+                    } else {
+                        cleanCwd
+                    }
+                "$base/$cleanPath"
             }
-            "$base/$cleanPath"
-        }
 
         val segments = mutableListOf<String>()
         val hasLeadingSlash = combined.startsWith('/') || effectivePrefix.isNotEmpty()
@@ -63,11 +67,12 @@ object PathAbsolutizer {
             }
         }
 
-        val joined = if (hasLeadingSlash) {
-            "/" + segments.joinToString("/")
-        } else {
-            if (segments.isEmpty()) "." else segments.joinToString("/")
-        }
+        val joined =
+            if (hasLeadingSlash) {
+                "/" + segments.joinToString("/")
+            } else {
+                if (segments.isEmpty()) "." else segments.joinToString("/")
+            }
 
         return if (effectivePrefix.isNotEmpty()) {
             effectivePrefix + joined
@@ -81,11 +86,12 @@ object PathAbsolutizer {
      * above the virtual root via `..` is clamped to the virtual root.
      */
     fun absolutizeVirtually(path: String, virtualRoot: String): String {
-        val normalizedRoot = if (virtualRoot.endsWith('/') && virtualRoot.length > 1) {
-            virtualRoot.dropLast(1)
-        } else {
-            virtualRoot
-        }
+        val normalizedRoot =
+            if (virtualRoot.endsWith('/') && virtualRoot.length > 1) {
+                virtualRoot.dropLast(1)
+            } else {
+                virtualRoot
+            }
         val resolved = absolutizeFrom(path, normalizedRoot)
         return if (resolved.startsWith(normalizedRoot)) {
             resolved
