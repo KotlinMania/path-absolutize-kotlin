@@ -2,7 +2,7 @@
   "type": "port",
   "name": "path-absolutize-kotlin",
   "source": {
-    "path": "tmp/path-absolutize/src",
+    "path": "tmp",
     "lang": "rust"
   },
   "target": {
