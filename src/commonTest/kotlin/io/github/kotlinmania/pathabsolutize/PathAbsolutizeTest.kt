@@ -1,4 +1,4 @@
-// port-lint: tests lib.rs
+// port-lint: tests path-absolutize/src/lib.rs
 package io.github.kotlinmania.pathabsolutize
 
 import kotlin.test.Test
