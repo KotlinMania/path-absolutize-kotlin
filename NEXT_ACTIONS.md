@@ -5,12 +5,12 @@ Based on AST analysis, here are the concrete next steps.
 ## Summary
 
 - **Files Present:** 1/6 (16.7%)
-- **Function parity:** 3/17 matched (target 15) — 17.6%
-- **Class/type parity:** 0/1 matched (target 3) — 0.0%
-- **Combined symbol parity:** 3/18 matched (target 18) — 16.7%
+- **Function parity:** 0/14 matched — 0.0%
+- **Class/type parity:** 0/1 matched — 0.0%
+- **Combined symbol parity:** 0/15 matched — 0.0%
 - **Average inline-code cosine:** 0.00 (function body across 0 matched files)
 - **Average documentation cosine:** 0.00 (doc text across 0 matched files)
-- **Cheat-zeroed Files:** 1
+- **Cheat-zeroed Files:** 0
 - **Critical Issues:** 1 files with <0.60 function similarity
 
 ## Priority 1: Fix Incomplete High-Dependency Files
@@ -27,17 +27,6 @@ No missing high-value files detected.
 
 Every matched file is listed below with function and type symbol parity.
 
-### 1. path-absolutize.lib
-
-- **Target:** `pathabsolutize.PathAbsolutize [STUB]`
-- **Similarity:** 0.00
-- **Dependents:** 0
-- **Priority Score:** 310.0
-- **Functions:** 3/3 matched (target 15)
-- **Missing functions:** _none_
-- **Types:** 0/0 matched (target 3)
-- **Missing types:** _none_
-
 ## Success Criteria
 
 For each file to be considered "complete":
@@ -46,4 +35,17 @@ For each file to be considered "complete":
 - All tests ported
 - Documentation ported
 - port-lint header present
+
+## Reexport / Wiring Modules
+
+These files match `reexport_modules` patterns in `.ast_distance_config.json`. They are filtered out of
+normal priority and missing-file ladders because they are wiring
+modules, not direct logic ports. Consult them for call-site routing;
+do not treat them as the next implementation target by default.
+
+### Matched
+
+| Source | Target | Path |
+|--------|--------|------|
+| `path-absolutize.lib` | `pathabsolutize.PathAbsolutize` | `path-absolutize/src/lib` |
 
