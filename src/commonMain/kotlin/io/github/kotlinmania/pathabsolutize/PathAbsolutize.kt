@@ -55,7 +55,10 @@ object PathAbsolutizer {
 
         for (part in combined.split('/')) {
             when (part) {
-                "", "." -> continue
+                "", "." -> {
+                    continue
+                }
+
                 ".." -> {
                     if (segments.isNotEmpty() && segments.last() != "..") {
                         segments.removeAt(segments.size - 1)
@@ -63,7 +66,10 @@ object PathAbsolutizer {
                         segments.add("..")
                     }
                 }
-                else -> segments.add(part)
+
+                else -> {
+                    segments.add(part)
+                }
             }
         }
 
